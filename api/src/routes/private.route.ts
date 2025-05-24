@@ -15,6 +15,8 @@ import {
   getArticlesByUser,
   getArticlesByUserPreferences,
   updateArticle,
+  voteArticle,
+  blockArticle,
 } from "../controllers/article.controller";
 import { getUsersByTypeAndArticleId } from "../controllers/user.controller";
 
@@ -45,4 +47,9 @@ router.get(
   verifyAuth,
   asyncHandler(getUsersByTypeAndArticleId)
 );
+
+router.patch("/articles/:articleId/vote", verifyAuth, asyncHandler(voteArticle));
+
+router.patch("/articles/:articleId/block", verifyAuth, asyncHandler(blockArticle));
+
 export default router;

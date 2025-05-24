@@ -80,7 +80,23 @@ export const getUsersDetailsByTypeAndArticleId = async (
   return response.data;
 };
 
-export const getArticlesByPreferances = async (): Promise<IArticlesResponse> => {
-  const response = await privateAxiosInstance.get("/articles");
+export const getArticlesByPreferances =
+  async (): Promise<IArticlesResponse> => {
+    const response = await privateAxiosInstance.get("/articles");
+    return response.data;
+  };
+
+export const voteArticle = async (
+  articleId: string,
+  voteType: "upvote" | "downvote"
+): Promise<IAxiosResponse> => {
+  const response = await privateAxiosInstance.patch(`/articles/${articleId}/vote`, {
+    voteType,
+  });
+  return response.data;
+};
+
+export const blockArticle = async (articleId: string): Promise<IAxiosResponse> => {
+  const response = await privateAxiosInstance.patch(`/articles/${articleId}/block`);
   return response.data;
 };

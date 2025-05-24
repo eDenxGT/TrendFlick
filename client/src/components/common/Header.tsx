@@ -1,37 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Home,
-  Settings,
-  Search,
-  X,
-  Menu,
-  FileText,
-  LogOut,
-} from "lucide-react";
+import { Home, Settings, Menu, FileText, LogOut } from "lucide-react";
 import { logoutUser } from "@/services/authService";
 
-interface FeedHeaderProps {
-  searchTerm: string;
-  setSearchTerm: (term: string) => void;
-  isSearchOpen: boolean;
-  setIsSearchOpen: (open: boolean) => void;
-}
-
-const Header: React.FC<FeedHeaderProps> = ({
-  searchTerm,
-  setSearchTerm,
-  isSearchOpen,
-  setIsSearchOpen,
-}) => {
+const Header: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -58,12 +37,6 @@ const Header: React.FC<FeedHeaderProps> = ({
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-4">
-            <Input
-              placeholder="Search articles..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-48 lg:w-64 bg-[#1e293b]/50 border-[#164e63]/30 focus:border-[#06b6d4] text-sm"
-            />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -104,18 +77,6 @@ const Header: React.FC<FeedHeaderProps> = ({
 
           {/* Mobile Navigation */}
           <div className="flex md:hidden items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="p-2 hover:bg-[#1e293b]/10"
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-            >
-              {isSearchOpen ? (
-                <X className="h-4 w-4 text-[#94a3b8]" />
-              ) : (
-                <Search className="h-4 w-4 text-[#94a3b8]" />
-              )}
-            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -155,19 +116,6 @@ const Header: React.FC<FeedHeaderProps> = ({
             </DropdownMenu>
           </div>
         </div>
-
-        {/* Mobile Search Bar */}
-        {isSearchOpen && (
-          <div className="md:hidden pb-3 border-t border-[#164e63]/20 pt-3 mt-3">
-            <Input
-              placeholder="Search articles..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-[#1e293b]/50 border-[#164e63]/30 focus:border-[#06b6d4] text-sm"
-              autoFocus
-            />
-          </div>
-        )}
       </div>
     </div>
   );

@@ -4,14 +4,18 @@ import ArticleModal from "@/components/modals/ArticleModal";
 import type { Article } from "@/types/Article";
 import Header from "@/components/common/Header";
 import { getCurrentUser } from "@/utils/helpers/getCurrentUser.helper";
-import { getArticlesByPreferances } from "@/services/userService";
+import {
+  blockArticle,
+  getArticlesByPreferances,
+  voteArticle,
+} from "@/services/userService";
+import { useToaster } from "@/hooks/ui/useToaster";
 
 const Feed = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { errorToast } = useToaster();
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -27,90 +31,123 @@ const Feed = () => {
 
   const userData = getCurrentUser();
   const currentUserId = userData ? userData.userId : null;
-  
-  const handleUpvote = (articleId: string) => {
-    setArticles((prevArticles) =>
-      prevArticles.map((article) => {
-        if (article.articleId === articleId) {
-          const hasUpvoted = article.upVotes.includes(currentUserId);
-          const hasDownvoted = article.downVotes.includes(currentUserId);
 
-          let newUpVotes = [...article.upVotes];
-          let newDownVotes = [...article.downVotes];
+  const handleUpvote = async (articleId: string) => {
+    try {
+      const response = await voteArticle(articleId, "upvote");
+      if (response.success) {
+        setArticles((prev) =>
+          prev.map((article) => {
+            if (article.articleId !== articleId) return article;
 
-          if (hasUpvoted) {
-            // Remove upvote
-            newUpVotes = newUpVotes.filter((id) => id !== currentUserId);
-          } else {
-            // Add upvote and remove downvote if exists
-            newUpVotes.push(currentUserId);
-            if (hasDownvoted) {
-              newDownVotes = newDownVotes.filter((id) => id !== currentUserId);
-            }
-          }
+            const hasUpvoted = article.upVotes.includes(currentUserId);
+            const hasDownvoted = article.downVotes.includes(currentUserId);
 
-          return {
-            ...article,
-            upVotes: newUpVotes,
-            downVotes: newDownVotes,
-          };
-        }
-        return article;
-      })
-    );
-  };
+            let newUpVotes = [...article.upVotes];
+            let newDownVotes = [...article.downVotes];
 
-  const handleDownvote = (articleId: string) => {
-    setArticles((prevArticles) =>
-      prevArticles.map((article) => {
-        if (article.articleId === articleId) {
-          const hasUpvoted = article.upVotes.includes(currentUserId);
-          const hasDownvoted = article.downVotes.includes(currentUserId);
-
-          let newUpVotes = [...article.upVotes];
-          let newDownVotes = [...article.downVotes];
-
-          if (hasDownvoted) {
-            // Remove downvote
-            newDownVotes = newDownVotes.filter((id) => id !== currentUserId);
-          } else {
-            // Add downvote and remove upvote if exists
-            newDownVotes.push(currentUserId);
             if (hasUpvoted) {
               newUpVotes = newUpVotes.filter((id) => id !== currentUserId);
+            } else {
+              newUpVotes.push(currentUserId);
+              if (hasDownvoted) {
+                newDownVotes = newDownVotes.filter(
+                  (id) => id !== currentUserId
+                );
+              }
             }
-          }
 
-          return {
-            ...article,
-            upVotes: newUpVotes,
-            downVotes: newDownVotes,
-          };
-        }
-        return article;
-      })
-    );
+            if (selectedArticle?.articleId === articleId) {
+              setSelectedArticle({
+                ...selectedArticle,
+                upVotes: newUpVotes,
+                downVotes: newDownVotes,
+              });
+            }
+
+            return { ...article, upVotes: newUpVotes, downVotes: newDownVotes };
+          })
+        );
+      }
+    } catch (err: any) {
+      errorToast(err?.response?.data?.message || "Failed to vote");
+    }
   };
 
-  const handleBlock = (articleId: string) => {
-    setArticles((prevArticles) =>
-      prevArticles.map((article) => {
-        if (article.articleId === articleId) {
-          const isBlocked = article.blockedBy.includes(currentUserId);
-          if (!isBlocked) {
-            // toast({
-            //   title: "Article blocked",
-            //   description: "This article has been hidden from your feed.",
-            // });
+  const handleDownvote = async (articleId: string) => {
+    try {
+      const response = await voteArticle(articleId, "downvote");
+      if (response.success) {
+        setArticles((prev) =>
+          prev.map((article) => {
+            if (article.articleId !== articleId) return article;
+
+            const hasUpvoted = article.upVotes.includes(currentUserId);
+            const hasDownvoted = article.downVotes.includes(currentUserId);
+
+            let newUpVotes = [...article.upVotes];
+            let newDownVotes = [...article.downVotes];
+
+            if (hasDownvoted) {
+              newDownVotes = newDownVotes.filter((id) => id !== currentUserId);
+            } else {
+              newDownVotes.push(currentUserId);
+              if (hasUpvoted) {
+                newUpVotes = newUpVotes.filter((id) => id !== currentUserId);
+              }
+            }
+
+            if (selectedArticle?.articleId === articleId) {
+              setSelectedArticle({
+                ...selectedArticle,
+                upVotes: newUpVotes,
+                downVotes: newDownVotes,
+              });
+            }
+
             return {
               ...article,
-              blockedBy: [...article.blockedBy, currentUserId],
+              upVotes: newUpVotes,
+              downVotes: newDownVotes,
             };
-          }
-        }
-        return article;
-      })
-    );
+          })
+        );
+      }
+    } catch (err: any) {
+      errorToast(err?.response?.data?.message || "Failed to vote");
+    }
+  };
+
+  const handleBlock = async (articleId: string) => {
+    try {
+      const response = await blockArticle(articleId);
+      if (response.success) {
+        setArticles((prev) =>
+          prev.map((article) => {
+            if (article.articleId !== articleId) return article;
+
+            const isBlocked = article.blockedBy.includes(currentUserId);
+            if (!isBlocked) {
+              return {
+                ...article,
+                blockedBy: [...article.blockedBy, currentUserId],
+              };
+            }
+
+            if (selectedArticle?.articleId === articleId) {
+              setSelectedArticle({
+                ...selectedArticle,
+                blockedBy: [...selectedArticle.blockedBy, currentUserId],
+              });
+            }
+
+            return article;
+          })
+        );
+      }
+    } catch (err: any) {
+      errorToast(err?.response?.data?.message || "Failed to block article");
+    }
   };
 
   const handleOpenDetails = (article: Article) => {
@@ -118,22 +155,10 @@ const Feed = () => {
     setIsModalOpen(true);
   };
 
-  const filteredArticles = articles.filter(
-    (article) =>
-      !article.blockedBy.includes(currentUserId) &&
-      (article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        article.description.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0f172a] to-[#121826]">
       {/* Header */}
-      <Header
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        isSearchOpen={isSearchOpen}
-        setIsSearchOpen={setIsSearchOpen}
-      />
+      <Header />
 
       {/* Main content */}
       <div className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
@@ -148,8 +173,8 @@ const Feed = () => {
 
         {/* Articles list */}
         <div className="space-y-3 sm:space-y-4">
-          {filteredArticles.length > 0 ? (
-            filteredArticles.map((article) => (
+          {articles.length > 0 ? (
+            articles.map((article) => (
               <ArticleCard
                 key={article.articleId}
                 article={article}
@@ -164,11 +189,6 @@ const Feed = () => {
             <div className="text-center py-8 sm:py-12">
               <p className="text-[#94a3b8] text-base sm:text-lg">
                 No articles found
-              </p>
-              <p className="text-[#64748b] text-xs sm:text-sm mt-2">
-                {searchTerm
-                  ? "Try adjusting your search terms"
-                  : "Check back later for new content"}
               </p>
             </div>
           )}

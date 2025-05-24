@@ -1,20 +1,25 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { ArrowUp, ArrowDown, Ban } from "lucide-react"
-import type { Article } from "@/types/Article"
-import { cn } from "@/lib/utils"
-import { getSmartDate } from "@/utils/helpers/timeFormatter.helper"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { ArrowUp, ArrowDown, Ban } from "lucide-react";
+import type { Article } from "@/types/Article";
+import { cn } from "@/lib/utils";
+import { getSmartDate } from "@/utils/helpers/timeFormatter.helper";
 
 interface ArticleModalProps {
-  article: Article | null
-  isOpen: boolean
-  onClose: () => void
-  onUpvote: (articleId: string) => void
-  onDownvote: (articleId: string) => void
-  onBlock?: (articleId: string) => void
-  currentUserId: string
-  getCategoryName?: (categoryId: string) => string
-  isMyArticle?: boolean
+  article: Article | null;
+  isOpen: boolean;
+  onClose: () => void;
+  onUpvote: (articleId: string) => void;
+  onDownvote: (articleId: string) => void;
+  onBlock?: (articleId: string) => void;
+  currentUserId: string;
+  getCategoryName?: (categoryId: string) => string;
+  isMyArticle?: boolean;
 }
 
 const ArticleModal = ({
@@ -27,11 +32,11 @@ const ArticleModal = ({
   currentUserId,
   isMyArticle,
 }: ArticleModalProps) => {
-  if (!article) return null
+  if (!article) return null;
 
-  const hasUpvoted = article.upVotes.includes(currentUserId)
-  const hasDownvoted = article.downVotes.includes(currentUserId)
-  const netVotes = article.upVotes.length - article.downVotes.length
+  const hasUpvoted = article.upVotes.includes(currentUserId);
+  const hasDownvoted = article.downVotes.includes(currentUserId);
+  const netVotes = article.upVotes.length - article.downVotes.length;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -46,7 +51,9 @@ const ArticleModal = ({
             <span className="mx-1">•</span>
             <span>{getSmartDate(article.createdAt.toString())}</span>
           </div>
-          <DialogTitle className="text-2xl font-bold text-[#ecfeff] pr-8">{article.title}</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-[#ecfeff] pr-8">
+            {article.title}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -63,68 +70,70 @@ const ArticleModal = ({
 
           {/* Article description */}
           <div className="prose prose-invert max-w-none">
-            <p className="text-[#cbd5e1] leading-relaxed whitespace-pre-wrap">{article.description}</p>
+            <p className="text-[#cbd5e1] leading-relaxed whitespace-pre-wrap">
+              {article.description}
+            </p>
           </div>
 
           {/* Action buttons */}
-          <div className="py-3 border-t border-[#164e63]/30 flex items-center gap-2">
-            {/* Upvote button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn(
-                "text-[#94a3b8] hover:bg-[#155e75]/20 flex items-center gap-1 text-sm h-9 px-4",
-                hasUpvoted && "text-[#06b6d4] hover:text-[#38bdf8]",
-              )}
-              onClick={() => onUpvote(article.articleId)}
-            >
-              <ArrowUp size={16} />
-            </Button>
+          {!isMyArticle && (
+            <div className="py-3 border-t border-[#164e63]/30 flex items-center gap-2">
+              {/* Upvote button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn(
+                  "text-[#94a3b8] hover:bg-[#155e75]/20 flex items-center gap-1 text-sm h-9 px-4",
+                  hasUpvoted && "text-[#06b6d4] hover:text-[#38bdf8]"
+                )}
+                onClick={() => onUpvote(article.articleId)}
+              >
+                <ArrowUp size={16} />
+              </Button>
 
-            {/* Vote count - Reddit style */}
-            <span
-              className={cn(
-                "text-sm font-medium",
-                netVotes > 0 && "text-[#06b6d4]",
-                netVotes < 0 && "text-[#f43f5e]",
-                netVotes === 0 && "text-[#94a3b8]",
-              )}
-            >
-              {netVotes}
-            </span>
+              {/* Vote count - Reddit style */}
+              <span
+                className={cn(
+                  "text-sm font-medium",
+                  netVotes > 0 && "text-[#06b6d4]",
+                  netVotes < 0 && "text-[#f43f5e]",
+                  netVotes === 0 && "text-[#94a3b8]"
+                )}
+              >
+                {netVotes}
+              </span>
 
-            {/* Downvote button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn(
-                "text-[#94a3b8] hover:bg-[#155e75]/20 flex items-center gap-1 text-sm h-9 px-4",
-                hasDownvoted && "text-[#f43f5e] hover:text-[#fb7185]",
-              )}
-              onClick={() => onDownvote(article.articleId)}
-            >
-              <ArrowDown size={16} />
-            </Button>
+              {/* Downvote button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn(
+                  "text-[#94a3b8] hover:bg-[#155e75]/20 flex items-center gap-1 text-sm h-9 px-4",
+                  hasDownvoted && "text-[#f43f5e] hover:text-[#fb7185]"
+                )}
+                onClick={() => onDownvote(article.articleId)}
+              >
+                <ArrowDown size={16} />
+              </Button>
 
-            {!isMyArticle && (
               <Button
                 variant="ghost"
                 size="sm"
                 className="text-[#94a3b8] hover:text-[#f43f5e] hover:bg-[#155e75]/20 flex items-center gap-1 text-sm h-9 px-4 ml-auto"
                 onClick={() => {
-                  onBlock?.(article.articleId)
-                  onClose()
+                  onBlock?.(article.articleId);
+                  onClose();
                 }}
               >
                 <Ban size={16} />
                 <span>Block</span>
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default ArticleModal
+export default ArticleModal;

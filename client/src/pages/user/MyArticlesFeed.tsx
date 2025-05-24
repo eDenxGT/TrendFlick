@@ -16,8 +16,6 @@ const MyArticlesFeed = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const [userListModal, setUserListModal] = useState<{
     isOpen: boolean;
@@ -54,12 +52,6 @@ const MyArticlesFeed = () => {
 
   const userData = getCurrentUser();
   const currentUserId = userData ? userData.userId : null;
-
-  const filteredArticles = articles.filter(
-    (article) =>
-      article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      article.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const handleEdit = (article: Article) => {
     navigate(`/edit-article/${article.articleId}`);
@@ -133,12 +125,7 @@ const MyArticlesFeed = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0f172a] to-[#121826]">
       {/* Header */}
-      <Header
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        isSearchOpen={isSearchOpen}
-        setIsSearchOpen={setIsSearchOpen}
-      />
+      <Header />
 
       {/* Main content */}
       <div className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
@@ -162,8 +149,8 @@ const MyArticlesFeed = () => {
 
         {/* Articles list */}
         <div className="space-y-3 sm:space-y-4">
-          {filteredArticles.length > 0 ? (
-            filteredArticles.map((article) => (
+          {articles.length > 0 ? (
+            articles.map((article) => (
               <ArticleCard
                 key={article.articleId}
                 article={article}
@@ -184,14 +171,7 @@ const MyArticlesFeed = () => {
           ) : (
             <div className="text-center py-8 sm:py-12">
               <p className="text-[#94a3b8] text-base sm:text-lg">
-                {searchTerm
-                  ? "No articles found"
-                  : "You haven't published any articles yet"}
-              </p>
-              <p className="text-[#64748b] text-xs sm:text-sm mt-2">
-                {searchTerm
-                  ? "Try adjusting your search terms"
-                  : "Create your first article to get started"}
+                You haven't published any articles yet
               </p>
             </div>
           )}

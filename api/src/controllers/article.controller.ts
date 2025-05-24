@@ -238,3 +238,67 @@ export const deleteArticle = async (req: Request, res: Response) => {
     handleErrorResponse(error);
   }
 };
+
+export const voteArticle = async (req: Request, res: Response) => {
+  try {
+    const { id: userId } = (req as CustomRequest).user;
+    const { articleId } = req.params;
+    const { voteType } = req.body; 
+
+    if (!["upvote", "downvote"].includes(voteType)) {
+      throw new AppError(ERROR_MESSAGES.INVALID_VOTE_TYPE, STATUS_CODE.BAD_REQUEST);
+    }
+
+    const article = await ArticleModel.findOne({ articleId });
+    if (!article) {
+      throw new AppError(ERROR_MESSAGES.ARTICLE_NOT_FOUND, STATUS_CODE.NOT_FOUND);
+    }
+
+    const hasUpvoted = article.upVotes.includes(userId);
+    const hasDownvoted = article.downVotes.includes(userId);
+
+    article.upVotes = article.upVotes.filter((id) => id !== userId);
+    article.downVotes = article.downVotes.filter((id) => id !== userId);
+
+    if (voteType === "upvote" && !hasUpvoted) {
+      article.upVotes.push(userId);
+    }
+
+    if (voteType === "downvote" && !hasDownvoted) {
+      article.downVotes.push(userId);
+    }
+
+    await article.save();
+
+    res.status(STATUS_CODE.OK).json({
+      success: true,
+    });
+  } catch (error) {
+    handleErrorResponse(error);
+  }
+};
+
+export const blockArticle = async (req: Request, res: Response) => {
+  try {
+    const { id: userId } = (req as CustomRequest).user;
+    const { articleId } = req.params;
+
+    const article = await ArticleModel.findOne({ articleId });
+    
+    if (!article) {
+      throw new AppError(ERROR_MESSAGES.ARTICLE_NOT_FOUND, STATUS_CODE.NOT_FOUND);
+    }
+
+    if (!article.blockedBy.includes(userId)) {
+      article.blockedBy.push(userId);
+      await article.save();
+    }
+
+    res.status(STATUS_CODE.OK).json({
+      success: true,
+      message: SUCCESS_MESSAGES.BLOCKED_SUCCESS,
+    });
+  } catch (error) {
+    handleErrorResponse(error);
+  }
+};

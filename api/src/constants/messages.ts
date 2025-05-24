@@ -19,6 +19,7 @@ export const ERROR_MESSAGES = {
     TOKEN_MISSING: "Token missing",
     INVALID_INPUT: "Invalid input",
     CATEGORY_EXISTS: "Category already exists",
+    INVALID_VOTE_TYPE: "Invalid vote",
 } as const;
 
 export const SUCCESS_MESSAGES = {
@@ -27,6 +28,7 @@ export const SUCCESS_MESSAGES = {
     CREATED_SUCCESS: "Created successfully",
     DELETED_SUCCESS: "Deleted successfully",
     TOKEN_VALID: "Token is valid",
+    BLOCKED_SUCCESS: "Blocked successfully",
     LOGIN_SUCCESS: "Login successful",
     LOGOUT_SUCCESS: "Logout successful",
     CATEGORY_CREATED: "Category created successfully",
