@@ -1,0 +1,31 @@
+export const ERROR_MESSAGES = {
+    REQUIRED_DATA: "Required data not provided",
+    USER_NOT_FOUND: "User not found",
+    USER_ID_NOT_PROVIDED: "User ID not provided",
+    EMAIL_OR_PHONE_EXISTS: "Email or Phone Exists",
+    EMAIL_EXISTS: "Email already exists",
+    PHONE_EXISTS: "Phone already exists",
+    WRONG_PASSWORD: "Wrong password",
+    SET_DIFF_PASSWORD: "Set a new password other than you old.",
+    UNAUTHORIZED: "Unauthorized access",
+    SERVER_ERROR: "Internal server error",
+    INVALID_CREDENTIALS: "Invalid email or password",
+    VALIDATION_ERROR: "Validation failed",
+    TOKEN_INVALID: "Token is invalid",
+    TOKEN_EXPIRED: "Invalid or expired token",
+    TOKEN_INVALID_REUSED: "Invalid or reused token",
+    REFRESH_TOKEN_INVALID: "Refresh token is invalid",
+    TOKEN_MISSING: "Token missing",
+    INVALID_INPUT: "Invalid input",
+    CATEGORY_EXISTS: "Category already exists",
+} as const;
+
+export const SUCCESS_MESSAGES = {
+    USER_CREATED: "Account created successfully",
+    UPDATED_SUCCESS: "Updated successfully",
+    TOKEN_VALID: "Token is valid",
+    LOGIN_SUCCESS: "Login successful",
+    LOGOUT_SUCCESS: "Logout successful",
+    CATEGORY_CREATED: "Category created successfully",
+    SESSION_RENEWED: "Session renewed successfully",
+}
