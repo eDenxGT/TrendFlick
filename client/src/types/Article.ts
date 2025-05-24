@@ -4,7 +4,9 @@ export interface Article {
   description: string;
   image: string;
   categoryId: string;
+  category: string;
   createdBy: string;
+  creatorName: string;
   upVotes: string[];
   downVotes: string[];
   blockedBy: string[];

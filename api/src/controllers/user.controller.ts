@@ -6,6 +6,7 @@ import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "../constants/messages";
 import { handleErrorResponse } from "../utils/helpers/handleError.helper";
 import { STATUS_CODE } from "../constants/statusCodes";
 import bcrypt from "bcrypt";
+import { ArticleModel } from "../models/article.model";
 
 export const getUserDetails = async (req: Request, res: Response) => {
   try {
@@ -127,6 +128,60 @@ export const updateUserPassword = async (req: Request, res: Response) => {
     res.status(STATUS_CODE.OK).json({
       success: true,
       message: SUCCESS_MESSAGES.UPDATED_SUCCESS,
+    });
+  } catch (error) {
+    handleErrorResponse(error);
+  }
+};
+
+export const getUsersByTypeAndArticleId = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { articleId, type } = req.params;
+
+    const typeMap = {
+      upvoters: "upVotes",
+      downvoters: "downVotes",
+      blockedBy: "blockedBy",
+    } as const;
+
+    if (!(type in typeMap)) {
+      throw new AppError("Invalid type parameter", STATUS_CODE.BAD_REQUEST);
+    }
+
+    const article = await ArticleModel.findOne({ articleId }).lean();
+    if (!article) {
+      throw new AppError(
+        ERROR_MESSAGES.ARTICLE_NOT_FOUND,
+        STATUS_CODE.NOT_FOUND
+      );
+    }
+
+    const key = typeMap[type as keyof typeof typeMap];
+    const userIds = article[key];
+
+    if (!userIds || userIds.length === 0) {
+      res.status(STATUS_CODE.OK).json({
+        success: true,
+        data: { users: [] },
+      });
+      return;
+    }
+
+    const users = await UserModel.find({ userId: { $in: userIds } }).select(
+      "userId firstName lastName"
+    );
+
+    const formattedUsers = users.map((user) => ({
+      userId: user.userId,
+      name: `${user.firstName} ${user.lastName}`.trim(),
+    }));
+
+    res.status(STATUS_CODE.OK).json({
+      success: true,
+      data: { users: formattedUsers },
     });
   } catch (error) {
     handleErrorResponse(error);

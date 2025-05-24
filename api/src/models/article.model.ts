@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 import { IArticle } from "../types/article";
 
 const articleSchema: Schema<IArticle> = new Schema(
@@ -46,4 +46,4 @@ const articleSchema: Schema<IArticle> = new Schema(
   }
 );
 
-export default mongoose.model<IArticle>("Article", articleSchema);
+export const ArticleModel = model<IArticle>("Article", articleSchema);

@@ -11,9 +11,10 @@ interface ArticleModalProps {
   onClose: () => void
   onUpvote: (articleId: string) => void
   onDownvote: (articleId: string) => void
-  onBlock: (articleId: string) => void
+  onBlock?: (articleId: string) => void
   currentUserId: string
   getCategoryName?: (categoryId: string) => string
+  isMyArticle?: boolean
 }
 
 const ArticleModal = ({
@@ -24,7 +25,7 @@ const ArticleModal = ({
   onDownvote,
   onBlock,
   currentUserId,
-  getCategoryName,
+  isMyArticle,
 }: ArticleModalProps) => {
   if (!article) return null
 
@@ -34,14 +35,14 @@ const ArticleModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-[#0f1729] border-[#164e63]/30">
+      <DialogContent className="custom-scrollbar max-w-4xl max-h-[80vh] overflow-y-auto bg-[#0f1729] border-[#164e63]/30">
         <DialogHeader>
           <div className="flex items-center text-xs text-[#64748b] mb-2">
             <span className="font-medium text-[#94a3b8]">
-              {getCategoryName ? getCategoryName(article.categoryId) : article.categoryId}
+              {article.category}
             </span>
             <span className="mx-1">•</span>
-            <span>Posted by {article.createdBy}</span>
+            <span>Posted by {article.creatorName}</span>
             <span className="mx-1">•</span>
             <span>{getSmartDate(article.createdAt.toString())}</span>
           </div>
@@ -105,19 +106,20 @@ const ArticleModal = ({
               <ArrowDown size={16} />
             </Button>
 
-            {/* Block button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-[#94a3b8] hover:text-[#f43f5e] hover:bg-[#155e75]/20 flex items-center gap-1 text-sm h-9 px-4 ml-auto"
-              onClick={() => {
-                onBlock(article.articleId)
-                onClose()
-              }}
-            >
-              <Ban size={16} />
-              <span>Block</span>
-            </Button>
+            {!isMyArticle && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-[#94a3b8] hover:text-[#f43f5e] hover:bg-[#155e75]/20 flex items-center gap-1 text-sm h-9 px-4 ml-auto"
+                onClick={() => {
+                  onBlock?.(article.articleId)
+                  onClose()
+                }}
+              >
+                <Ban size={16} />
+                <span>Block</span>
+              </Button>
+            )}
           </div>
         </div>
       </DialogContent>

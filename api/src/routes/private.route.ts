@@ -8,6 +8,15 @@ import {
   updateUserDetails,
   updateUserPassword,
 } from "../controllers/user.controller";
+import {
+  createArticle,
+  deleteArticle,
+  getArticleById,
+  getArticlesByUser,
+  getArticlesByUserPreferences,
+  updateArticle,
+} from "../controllers/article.controller";
+import { getUsersByTypeAndArticleId } from "../controllers/user.controller";
 
 const router = Router();
 
@@ -19,4 +28,21 @@ router
   .put(verifyAuth, asyncHandler(updateUserDetails))
   .patch(verifyAuth, asyncHandler(updateUserPassword));
 
+router.post("/article", verifyAuth, asyncHandler(createArticle));
+
+router.get("/my-articles", verifyAuth, asyncHandler(getArticlesByUser));
+
+router
+  .route("/article/:articleId")
+  .get(verifyAuth, asyncHandler(getArticleById))
+  .put(verifyAuth, asyncHandler(updateArticle))
+  .delete(verifyAuth, asyncHandler(deleteArticle));
+
+router.get("/articles", verifyAuth, asyncHandler(getArticlesByUserPreferences));
+
+router.get(
+  "/articles/:articleId/users/:type",
+  verifyAuth,
+  asyncHandler(getUsersByTypeAndArticleId)
+);
 export default router;

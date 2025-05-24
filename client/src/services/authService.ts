@@ -1,5 +1,9 @@
 import { authAxiosInstance } from "@/api/authAxios.instance";
-import type { IAxiosResponse, ICategoryResponse, ILoginResponse } from "@/types/Response";
+import type {
+  IAxiosResponse,
+  ICategoryResponse,
+  ILoginResponse,
+} from "@/types/Response";
 import type { User } from "@/types/User";
 
 export const getCategories = async (): Promise<ICategoryResponse> => {
@@ -19,9 +23,20 @@ export const registerUser = async (
   return response.data;
 };
 
-export const loginUser = async (
-  userData: { identifier: string; password: string, loginMethod: 'email' | 'phone' }
-): Promise<ILoginResponse> => {
-  const response = await authAxiosInstance.post<ILoginResponse>("/login", userData);
+export const loginUser = async (userData: {
+  identifier: string;
+  password: string;
+  loginMethod: "email" | "phone";
+}): Promise<ILoginResponse> => {
+  const response = await authAxiosInstance.post<ILoginResponse>(
+    "/login",
+    userData
+  );
+  return response.data;
+};
+
+export const logoutUser = async () => {
+  const response = await authAxiosInstance.post("/logout");
+
   return response.data;
 };

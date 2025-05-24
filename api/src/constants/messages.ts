@@ -4,6 +4,7 @@ export const ERROR_MESSAGES = {
     USER_ID_NOT_PROVIDED: "User ID not provided",
     EMAIL_OR_PHONE_EXISTS: "Email or Phone Exists",
     EMAIL_EXISTS: "Email already exists",
+    ARTICLE_NOT_FOUND: "Article not found",
     PHONE_EXISTS: "Phone already exists",
     WRONG_PASSWORD: "Wrong password",
     SET_DIFF_PASSWORD: "Set a new password other than you old.",
@@ -23,6 +24,8 @@ export const ERROR_MESSAGES = {
 export const SUCCESS_MESSAGES = {
     USER_CREATED: "Account created successfully",
     UPDATED_SUCCESS: "Updated successfully",
+    CREATED_SUCCESS: "Created successfully",
+    DELETED_SUCCESS: "Deleted successfully",
     TOKEN_VALID: "Token is valid",
     LOGIN_SUCCESS: "Login successful",
     LOGOUT_SUCCESS: "Logout successful",
