@@ -1,9 +1,9 @@
 import { getUserDetails } from "@/services/userService";
-import type { IUserResponse } from "@/types/Response";
 import { useQuery } from "@tanstack/react-query";
+import type { ISingleUserResponse } from "@/types/Response";
 
 export const useGetUserDetails = () => {
-  return useQuery<IUserResponse>({
+  return useQuery<ISingleUserResponse>({
     queryKey: ["user-details"],
     queryFn: () => getUserDetails(),
     refetchOnMount: true,
