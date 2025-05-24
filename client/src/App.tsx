@@ -14,6 +14,7 @@ import MyArticlesFeed from "./pages/user/MyArticlesFeed";
 import ScrollToTop from "./utils/ScrollToTop";
 import CreateArticle from "./pages/user/CreateArticle";
 import EditArticle from "./pages/user/EditArticle";
+import NotFound from "./pages/NotFoundPage";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
           path="/edit-article/:articleId"
           element={<ProtectedRoute element={<EditArticle />} />}
         />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
