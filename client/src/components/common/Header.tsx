@@ -92,7 +92,7 @@ const Header: React.FC = () => {
                 align="end"
               >
                 <DropdownMenuItem
-                  onClick={() => navigate("/home")}
+                  onClick={() => navigate("/my-articles")}
                   className="hover:bg-[#334155] cursor-pointer"
                 >
                   <Home className="mr-2 h-4 w-4" />
