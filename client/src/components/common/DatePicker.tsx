@@ -14,11 +14,12 @@ export default function BasicDatePicker({
   const handleDateChange = (value: PickerValue | null) => {
     onChange(value ? new Date(value.format("YYYY-MM-DD")) : null);
   };
+  console.log(value);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
         onChange={handleDateChange}
-        value={dayjs(value) || null}
+        value={value ? dayjs(value) : null}
         className="bg-[#1e293b]/50 border-[#164e63]/30 w-full rounded-md  focus:border-[#06b6d4]"
         slotProps={{
           textField: {

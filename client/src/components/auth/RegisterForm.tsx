@@ -149,7 +149,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                   Date of Birth
                 </Label>
 
-                <BasicDatePicker onChange={handleDateChange} />
+                <BasicDatePicker onChange={handleDateChange} value={formik.values.dob}/>
 
                 {formik.touched.dob && formik.errors.dob && (
                   <p className="text-xs text-red-500 mt-1">

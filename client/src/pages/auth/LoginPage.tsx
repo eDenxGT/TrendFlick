@@ -127,7 +127,7 @@ const Login = () => {
                   )}
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-2 mb-4">
                   <Label htmlFor="password" className="text-[#94a3b8]">
                     Password
                   </Label>
@@ -155,15 +155,6 @@ const Login = () => {
                       {formik.errors.password}
                     </div>
                   )}
-                </div>
-
-                <div className="text-right">
-                  <Link
-                    to="#"
-                    className="text-sm text-[#22d3ee] hover:text-[#67e8f9] hover:underline transition-colors"
-                  >
-                    Forgot password?
-                  </Link>
                 </div>
               </div>
             </CardContent>
