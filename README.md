@@ -53,10 +53,19 @@ TrendFlick is a cutting-edge article platform that provides personalized article
 
    ```env
    PORT=5000
-   MONGODB_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret
-   EMAIL_USER=your_email@gmail.com
-   EMAIL_PASS=your_email_password
+   MONGO_URI=your_mongodb_connection_string
+   CORS_ALLOWED_ORIGIN=frontend_URL
+   ACCESS_TOKEN_SECRET=your_access_token_secret
+   REFRESH_TOKEN_SECRET=your_refresh_token_secret
+   ```
+
+   Create a `.env` file in the client directory with the following variables:
+
+   ```env
+   VITE_API_AUTH_URL=http://localhost:5000/api/auth
+   VITE_API_PVT_URL=http://localhost:5000/api/pvt
+   VITE_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+   VITE_CLOUDINARY_IMAGE_UPLOAD_PRESET=your_cloudinary_image_upload_preset
    ```
 
 4. Start the development servers:
@@ -66,7 +75,7 @@ TrendFlick is a cutting-edge article platform that provides personalized article
    npm run dev
    
    # Start frontend (from client directory)
-   npm start
+   npm run dev
    ```
 
 ## Usage
@@ -74,8 +83,16 @@ TrendFlick is a cutting-edge article platform that provides personalized article
 1. Create a new account or log in
 2. Select your preferred article categories
 3. Browse personalized content on your dashboard
-4. Save articles to read later
-5. Receive email notifications for new content in your categories
+4. Upvote, downvote articles
+5. Block articles
+6. Upload articles
+
+## Deployment
+
+Deployed on:
+
+- Frontend: [https://trendflick.edengt.in/](https://trendflick.edengt.in/)
+- Backend: [https://trendflick-api.edengt.in/](https://trendflick-api.edengt.in/)
 
 ## 🤝 Contributing
 
